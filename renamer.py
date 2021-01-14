@@ -6,6 +6,7 @@ import argparse
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--doit", default=False, action="store_true", help="Do It!!")
+    parser.add_argument("-m", "--mkdir", default=False, action="store_true", help="Make dirs")
     parser.add_argument("-rx", "--regex", help="regex")
     parser.add_argument("-o", "--out", help="output filename template")
     parser.add_argument("files", nargs="*", help="files to rename")
@@ -15,6 +16,7 @@ if __name__ == "__main__":
 
     strict = args.strict
     doit = args.doit
+    mkdir = args.mkdir
     verbose = args.verbose
     if args.regex:
         regex = re.compile(args.regex)
@@ -73,7 +75,17 @@ if __name__ == "__main__":
 
     maxin = max(map(len, ins))
     for name, newname in pairs:
-        if doit:
-            os.rename(name, newname)
+        dir = os.path.dirname(newname)
+        if not os.path.isdir(dir):
+            if mkdir:
+                if (not doit) or verbose:
+                    print(f"mkdir: \"{dir}\"")
+                if doit:
+                    os.makedirs(dir)
+            else:
+                print(f"ERROR: Destination path doesn't exist! \"{dir}\"", file=sys.stderr)
+                sys.exit(1)
         if (not doit) or verbose:
             print(f"\"{name}\"".ljust(maxin+2) + f" => \"{newname}\"")
+        if doit:
+            os.rename(name, newname)
