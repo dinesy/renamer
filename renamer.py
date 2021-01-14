@@ -43,24 +43,24 @@ if __name__ == "__main__":
         srch = regex.search(name)
         if not srch:
             if strict:
-                print(f"non-matching filename: {name}", file=sys.stderr)
+                print(f"non-matching filename: \"{name}\"", file=sys.stderr)
             continue
  
         if name in ins:
             continue
         if name in outs:
-            print(f"WARNING: Source Filename collision! ({name})", file=sys.stderr)
+            print(f"WARNING: Source Filename collision! (\"{name}\")", file=sys.stderr)
             continue
         if not os.path.exists(name):
-            print(f"WARNING: Source file does not exist! ({name})", file=sys.stderr)
+            print(f"WARNING: Source file does not exist! (\"{name}\")", file=sys.stderr)
             continue
 
         newname = filepat.format(**srch.groupdict(), env=os.environ)
         if newname in outs:
-            print(f"ERROR: Dest Filename collision! ({newname})", file=sys.stderr)
+            print(f"ERROR: Dest Filename collision! (\"{newname}\")", file=sys.stderr)
             sys.exit(1)
         if os.path.exists(newname):
-            print(f"ERROR: Dest filename already exists! ({newname})", file=sys.stderr)
+            print(f"ERROR: Dest filename already exists! (\"{newname}\")", file=sys.stderr)
             sys.exit(1)
 
         pairs.append((name, newname))
