@@ -30,7 +30,13 @@ if __name__ == "__main__":
         filepat = args.out
     elif os.path.isfile("renamer.format"):
         with open("renamer.format") as fmtfile:
-            filepat = fmtfile.read().strip()
+            for line in fmtfile:
+                line = line.strip()
+                if line[0] == "#":
+                    continue
+                elif line:
+                    filepat = line
+                    break
     else:
         parser.error("No output format string given")
     
